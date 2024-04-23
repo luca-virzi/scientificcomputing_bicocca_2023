@@ -1,0 +1,35 @@
+## Egocentric action
+
+name: Megalomeniac Exercise
+on: [push]
+run-name: ${{ github.actor }} is a megalomeniac
+jobs:
+  Find-me-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Find me
+        id: find_me
+        run: | 
+            grep "Luca" ./README.md
+      - name: pull-request
+        uses: repo-sync/pull-request@v2
+        with:
+              destination_branch: "main"
+              github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Change something
+        run: |
+            find . -type f -name "*.md" -print0 | xargs -0 sed -i "s/foo/bar/g"
+      - name: Commit
+        if: steps.find_me.outputs == 'true'
+        run: |
+          git config --global user.email lvirzi1@campus.unimib.it
+          config --global user.name luca-virzi
+          git add .
+          git commit -am "GH ACTION Headlines $(date)"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+      

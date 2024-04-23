@@ -1,0 +1,25 @@
+## Unit testing
+
+name: Unit testing
+on: [push]
+jobs:
+  test:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Check out repository code
+         uses: actions/checkout@v4
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with: 
+            python-version: '3.11'
+       - name: Install Dependencies
+         run: |
+             python -m pip install --upgrade pip
+             pip install pytest
+             pip install pytest-cov
+             pip install numpy
+             pip install coverage
+       - name: Run Pytest
+         run: |
+             pytest -v
+             pytest --cov=restrict_test --cov-fail-under=99
